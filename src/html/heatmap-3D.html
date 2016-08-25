@@ -12,7 +12,7 @@
 		background-color: #F0F0F4;
 	}
 
-	.tooltip 
+	.tooltip
 	{
 		background-color: #FFFFFF;
 		opacity: .9;
@@ -24,13 +24,13 @@
 	    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
 	    pointer-events: none;
 	}
-	
-	.hidden 
+
+	.hidden
 	{
 	    display: none;
 	}
-	
-	.tooltip p 
+
+	.tooltip p
 	{
 	    margin: 0;
 	    font-family: sans-serif;
@@ -101,9 +101,9 @@
 	    text-align: center;
 	    pointer-events: none;
 	    width: 0px;
-	    height: 0px;	    
+	    height: 0px;
 	}
-</style>    		
+</style>
 
 <body>
    <div class="container" style="flex-direction: column">
@@ -117,33 +117,33 @@
 						<br>
 						<div style="font: 24px sans-serif; text-align: left; color: black;"><p style="display:inline">Selected Date: <p id="HeatmapDate" style="display:inline">2016-05-31</p></p>
 						</div>
-					</div>				
+					</div>
 				</div>
 			</div>
 			<div id="canvasContainer" style="flex-direction: column">
-				<div id="pathLabel"></div>
-				<canvas id="threeCanvas" width="200" height="100"></canvas>
 				<div>
-					HVAC Variable to Display: 
+					HVAC Variable to Display:
 					<select id="HVACDropdown" oninput="changeHVAC()">
 					</select>
 				</div>
-				<div>					
+				<div>
 					<input type="range" id="timeSlider" step="1" max="287" min="0" value="0" oninput="changeTimestep()" style="width:100%">
 				</div>
 				<div style="text-align: center">Time: <p id="HVACTime" style="display: inline">00:00</p></div>
+				<div id="pathLabel"></div>
+				<canvas id="threeCanvas" width="200" height="100"></canvas>
 				<div style="flex-direction: row">
 					<p id="colorMinValue"></p>
 					<div id="colorScale"></div>
 					<p id="colorMaxValue"></p>
 				</div>
 			</div>
-		</div>			
+		</div>
 		<div class="container" style="flex-direction: row">
-			<div id="dataset-picker" class="flex-item"></div>			
-		</div>		
+			<div id="dataset-picker" class="flex-item"></div>
+		</div>
 	</div>
-	
+
 	<script src="../js/3DView.js"></script>
 	<script src="../js/correlation.js"></script>
 	<script src="../js/heatmap.js"></script>
