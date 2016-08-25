@@ -1,6 +1,6 @@
 const HEATMAP_SIZE = {width: 1200, height: 600};
 const MULTIPLES_SIZE = {width: 260, height: 125};
-const LEGEND_SIZE = {width: 600, height: 150};
+const LEGEND_SIZE = {width: 600, height: 100};
 
 const HEATMAP_INSET = {left: 80, right: 2, top: 30, bottom: 10};
 
@@ -222,14 +222,14 @@ function drawLegend()
           	
           	if (d.substr(0, 2) == "F3")
           	{
-            	return 70;
+            	return 55;
           	}
 
-            return 100;
+            return 70;
         })
         .attr("class", ".legend")
         .attr("width", w / dataset.length - barPadding)
-        .attr("height", 15)
+        .attr("height", 10)
         .attr("fill", function(d, i)
         {	
         	return colors[i%8];
@@ -248,18 +248,18 @@ function drawLegend()
         {
         	if(d.substr(0, 2) == "F2")
         	{
-        		return 70;
+        		return 55;
         	}
         	
         	if (d.substr(0, 2) == "F3")
         	{
-         		return 100;
+         		return 70;
         	}
 
         	return 40;
         })
         .attr("width", w / dataset.length - barPadding)
-        .attr("height", 15)
+        .attr("height", 10)
         .style("fill", function(d, i)
         {
         	if (d.substr(0, 2) == "F2")
@@ -297,10 +297,10 @@ function drawLegend()
        			
        			if( i == 1)
        			{
-       			  return 80;
+       			  return 65;
        			}
 
-       			return 110;
+       			return 80;
        		})
        	.attr("font-family", "sans-serif")
        	.attr("font-size", "11px")
