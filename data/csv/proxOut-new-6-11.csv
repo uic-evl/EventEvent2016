@@ -1,0 +1,25 @@
+date,time,type,proxID,floor,zone
+2016-06-11, 08:30:00, fixed-prox, mbramar001, 1, 1
+2016-06-11, 08:30:54, fixed-prox, mbramar001, 1, 4
+2016-06-11, 08:31:36, fixed-prox, mbramar001, 2, 4
+2016-06-11, 08:32:07, fixed-prox, mbramar001, 3, 4
+2016-06-11, 08:32:09, fixed-prox, mbramar001, 3, 1
+2016-06-11, 08:32:24, fixed-prox, mbramar001, 3, 6
+2016-06-11, 09:00:00, fixed-prox, ostrum001, 1, 1
+2016-06-11, 09:00:54, fixed-prox, ostrum001, 1, 4
+2016-06-11, 09:01:36, fixed-prox, ostrum001, 2, 4
+2016-06-11, 09:02:07, fixed-prox, ostrum001, 3, 4
+2016-06-11, 09:02:09, fixed-prox, ostrum001, 3, 1
+2016-06-11, 09:02:28, fixed-prox, ostrum001, 3, 6
+2016-06-11, 09:02:35, fixed-prox, ostrum001, 3, 3
+2016-06-11, 11:30:05, fixed-prox, mbramar001, 3, 1
+2016-06-11, 11:30:24, fixed-prox, mbramar001, 3, 4
+2016-06-11, 11:31:06, fixed-prox, mbramar001, 2, 4
+2016-06-11, 11:31:37, fixed-prox, mbramar001, 1, 4
+2016-06-11, 11:31:39, fixed-prox, mbramar001, 1, 1
+2016-06-11, 13:03:08, fixed-prox, ostrum001, 3, 6
+2016-06-11, 13:03:15, fixed-prox, ostrum001, 3, 1
+2016-06-11, 13:03:35, fixed-prox, ostrum001, 3, 4
+2016-06-11, 13:04:17, fixed-prox, ostrum001, 2, 4
+2016-06-11, 13:04:48, fixed-prox, ostrum001, 1, 4
+2016-06-11, 13:04:50, fixed-prox, ostrum001, 1, 1

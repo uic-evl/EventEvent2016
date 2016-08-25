@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Get Employee Durations</title>
+        <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+
+            var employees = [];
+
+            var myData = null;
+    
+            d3.csv("../data/csv/proxOut-new-6-13.csv", function(error,data){
+                if(error) console.log("Error" + error);
+                myData = data;  
+                dataReady();
+            });
+
+            function secondsToHms(d) {
+                    d = Number(d);
+                    var h = Math.floor(d / 3600);
+                    var m = Math.floor(d % 3600 / 60);
+                    var s = Math.floor(d % 3600 % 60);
+                    return ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s); 
+            }
+
+            function parseTime(str1, str2){
+                var time1 = str1.split(":");  
+                var time2 = str2.split(":"); 
+
+                var hr1 = Number(time1[0]);
+                var min1 = Number(time1[1]);
+                var sec1 = Number(time1[2]);
+
+                var totalSec1 = (hr1 * 3600) + (min1 * 60) + sec1;
+
+                var hr2 = Number(time2[0]);
+                var min2 = Number(time2[1]);
+                var sec2 = Number(time2[2]);
+
+                var totalSec2 = (hr2 * 3600) + (min2 * 60) + sec2;
+
+                var difference = totalSec2 - totalSec1;
+
+                var elapsed = secondsToHms(difference);
+
+                return elapsed;
+            }
+
+            function downloadJSON(object) {
+                var json = JSON.stringify(object)
+
+                var csvWin = window.open("","","");
+                csvWin.document.write('<meta name="content-type" content="text/csv">');
+                csvWin.document.write('<meta name="content-disposition" content="attachment;  filename=test.csv">  ');
+                csvWin.document.write(json);
+            }
+
+            function dataReady(){
+
+                var id;
+                var floor;
+                var zone;
+                var duration;
+   
+                for (var x = 0 ; x < myData.length; x++) {
+                    
+                    var employeesAt = -1;
+                    
+                    for (var y = 0; y < employees.length && employeesAt === -1; y++) {
+                        if (myData[x].proxID === employees[y][0].proxID) {                          
+                            employeesAt = y;
+                        }
+                    }
+                    
+                    if ( employeesAt === -1) {
+                        var obj = {date: myData[x].date, time: myData[x].time, proxID: myData[x].proxID, 
+                                   floor: myData[x].floor, zone: myData[x].zone, duration: "0"};
+
+                        employees.push([obj]);
+
+                    } else {
+
+                        var objNew = {date: myData[x].date, time: myData[x].time, proxID: myData[x].proxID, 
+                                        floor: myData[x].floor, zone: myData[x].zone, duration: "0"};
+
+                        employees[employeesAt].push(objNew);
+
+                        var index = employees[employeesAt].length-1;
+
+                        var startTime = employees[employeesAt][index-1].time;
+
+                        var endTime = employees[employeesAt][index].time;
+
+                        var elapsed = parseTime(startTime, endTime);
+
+                        employees[employeesAt][index-1].duration = elapsed;
+
+                    }
+                }
+
+             console.log(employees);
+
+             //downloadJSON(employees);
+             
+            }//end of function dataReady()
+
+
+                
+        </script>
+    </body>
+</html>

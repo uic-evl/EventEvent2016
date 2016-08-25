@@ -1,0 +1,53 @@
+What are the typical patterns in the prox card data? What does a typical day look like for GAStech employees?
+
+Describe up to ten of the most interesting patterns that appear in the building data. Describe what is notable about the pattern and explain its possible significance.
+
+Describe up to ten notable anomalies or unusual events you see in the data. Prioritize those issues that are most likely to represent a danger or a serious issue for building operations.
+
+Describe up to five observed relationships between the proximity card data and building data elements. If you find a causal relationship (for example, a building event or condition leading to personnel behavior changes or personnel activity leading to building operations changes), describe your discovered cause and effect, the evidence you found to support it, and your level of confidence in your assessment of the relationship.
+
+Prox:
+How long does each person stay in each zone on avg?
+	Allow user to view times + a heatmap sort of indication of the zones for each person + overall
+	Is this where their office is?
+How many times do people visit each zone throughout the day?
+	Similar heatmap visualization with sortable table
+Allow sort by time spent in different zones (ability to sort zones by inc/dec time but also to show users that spend most/least time in a particular zone)
+Allow sort by visits to different zones (ability to sort zones by inc/dec visits but also to show users that visit a particular zone most)
+Allow selection of multiple users
+	Display heatmap + times for the selected group only, allow these groups to be saved (tag the users)
+Allow user to view raw checkin data
+	Allow sorting by time, zone, floor
+Give user ability to display only info pertaining to a selectable range of time (?)
+
+IDs:
+# of IDs per person
+# of uses of each ID per person
+# of total ID uses per person
+Earlier ID use after later ID acquired
+
+Prox Zone notes:
+Floor 3 zone 4 is shared by server room, stairs/elevator, mech/elev, and stairs
+Floor 2 zone 4 is shared by stairs/elevator, mech/elev, what look to be stairs from other but are in the open and right next to labeled stairs, and room 2170 for some reason
+Loading dock shares zone with the deli and office 1020, maybe check for suspicious activity here
+
+HVAC:
+Allow user to filter per floor to per zone
+Show all info for each zone
+	status for heating + cooling
+	thresholds for heating + cooling
+		are we above/below a threshold?
+			if so, color code something to indicate
+	color in general
+		white neutral, red high, blue low
+	use color or other visual indicator to show user areas of interest
+		ex. when temp is too high and cooling is of
+	co2 concentration, thermostat temp + settings, airflow, light power
+maybe use color to encode change over a period of time (more red for large, fast increase; blue for decrease)
+
+Hazium:
+Straightforward graph is probably best (for both streaming + non-streaming data)
+
+All:
+If we allow the user to choose a time range, make sure to apply this time range across all sets
+	Also allow something like clicking on the graph to jump to a particular time (help filter results)

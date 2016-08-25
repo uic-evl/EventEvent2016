@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<body>
+</body>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<script>
+
+var datasets = ["../data/json/clustering/proxOut-Durations-5-31.json", "../data/json/clustering/proxOut-Durations-6-1.json", 
+"../data/json/clustering/proxOut-Durations-6-2.json", "../data/json/clustering/proxOut-Durations-6-3.json", 
+"../data/json/clustering/proxOut-Durations-6-4.json", "../data/json/clustering/proxOut-Durations-6-5.json", 
+"../data/json/clustering/proxOut-Durations-6-6.json", "../data/json/clustering/proxOut-Durations-6-7.json", 
+"../data/json/clustering/proxOut-Durations-6-8.json", "../data/json/clustering/proxOut-Durations-6-9.json", 
+"../data/json/clustering/proxOut-Durations-6-10.json", "../data/json/clustering/proxOut-Durations-6-11.json", 
+"../data/json/clustering/proxOut-Durations-6-12.json", "../data/json/clustering/proxOut-Durations-6-13.json"];
+
+var dates = ["2016-05-31", "2016-06-01", "2016-06-02","2016-06-03","2016-06-04","2016-06-05","2016-06-06","2016-06-07","2016-06-08","2016-06-09","2016-06-10","2016-06-11","2016-06-12","2016-06-13"]
+
+const DATE_EVALUATING = 13;
+
+var employeeLocs = {};
+var employeeList = [];
+var proxIDList = [];
+var times = [];
+
+// EXECUTION START
+init();
+// EXECUTION END
+
+function init()
+{
+	//loadProxIDList(datasets[0], loadEmployeeLocs);
+	loadEmployeeList(datasets[DATE_EVALUATING], loadEmployeeLocs);
+}
+
+function loadEmployeeList(filename, callback)
+{
+	d3.json(filename, function(error, data)
+	{
+		if(error)
+			throw error;
+
+		for(var i = 0; i < data.length; i++)
+		{
+			employeeList.push(data[i][0].proxID);
+		}
+
+		console.log(employeeList.length + " IDs found");
+		console.log(employeeList);
+
+		callback("../data/json/proxOut-MC2new.json", data, afterData);
+	});
+}
+
+function loadProxIDList(filename, callback)
+{
+	d3.json(filename, function(error, data)
+	{
+		if(error)
+			throw error;
+
+		for(var i = 0; i < data.length; i++)
+		{
+			var proxID = data[i].message.proxCard;
+			if(proxIDList.includes(proxID))
+			{
+				continue;
+			}
+			else
+			{
+				proxIDList.push(proxID);
+			}
+		}
+
+		console.log(proxIDList.length + " IDs found");
+		console.log(proxIDList);
+
+		callback(filename, afterData);
+	});
+}
+
+function loadEmployeeLocs(filename, dayDataByEmployee, callback)
+{
+	// init employeeLocs
+	for(var i = 0; i < employeeList.length; i++)
+	{
+		employeeLocs[employeeList[i]] = [];
+	}
+
+	d3.json(filename, function(error, data)
+	{
+		if(error)
+			throw error;
+
+		// set all employees as out of office to begin the day
+		for(var employee = 0; employee < employeeList.length; employee++)
+		{
+			employeeLocs[employeeList[employee]].push({floor:-1,zone:-1,offset:0});
+		}
+
+		// get all employee locations at the time of each zone change
+		for(var message = 0; message < data.length; message++)
+		{
+			var proxEntry = data[message];
+			var currentDay = new Date(proxEntry.message.datetime);
+			var proxID = proxEntry.message.proxCard;
+			//console.log(proxEntry);
+			//console.log("FLOOR-ZONE: " + proxEntry["message"]["floor"] + "-" + proxEntry["message"]["zone"]);
+
+			// only evaluate things that occur on the day we are interested in
+			if(DATE_EVALUATING != Math.floor(proxEntry.offset/86400))
+			{
+				//console.log("date mismatch what");
+				//console.log("looking for " + DATE_EVALUATING + ", got " + Math.floor(proxEntry.offset/86400) + "@ " + proxEntry.offset);
+				if(times.length > 0)
+				{
+					break;
+				}
+				else
+				{
+					continue;
+				}
+			}
+
+			//console.log("no mismatch");
+
+			// push the time into the list of times
+			times.push(proxEntry.message.datetime);
+
+			// loop through all employees, find their location at the time of the entry, and store it
+			for(var employee = 0; employee < employeeList.length; employee++)
+			{
+				for(var entry = 0; entry < dayDataByEmployee[employee].length; entry++)
+				{
+					if(dayDataByEmployee[employee][entry].startTimeSeconds <= proxEntry.offset%86400 && proxEntry.offset%86400 < dayDataByEmployee[employee][entry].endTimeSeconds)
+					{
+						//console.log("match");
+						//console.log(dayDataByEmployee[employee][entry].startTimeSeconds + " <= " + proxEntry.offset + " && " + proxEntry.offset + " <= " + dayDataByEmployee[employee][entry].endTimeSeconds)
+						// match! push an entry for this user and move on to the next one
+						employeeLocs[employeeList[employee]].push({floor:+dayDataByEmployee[employee][entry].floor,zone:+dayDataByEmployee[employee][entry].zone,offset:+proxEntry.offset});
+
+						break;
+					}
+				}
+			}
+		}
+
+		// set all employees as out of office to end the day
+		for(var employee = 0; employee < employeeList.length; employee++)
+		{
+			employeeLocs[employeeList[employee]].push({floor:-1,zone:-1,offset:86400});
+		}
+
+		// make callback
+		callback();
+	});
+}
+
+function afterData()
+{
+	console.log("#times: " + times.length);
+	console.log(times);
+	downloadJSON(employeeLocs);
+}
+
+// get the name portion of a prox id
+function getProxName(id)
+{
+	return id.substr(0, id.length - 3).toLowerCase();
+}
+
+function downloadJSON(object) 
+{
+	var json = JSON.stringify(object);
+
+	var csvWin = window.open("","","");
+	csvWin.document.write('<meta name="content-type" content="text/csv">');
+	csvWin.document.write('<meta name="content-disposition" content="attachment;  filename=test.csv">  ');
+	csvWin.document.write(json);
+}
+
+</script>

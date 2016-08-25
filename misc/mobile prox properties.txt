@@ -1,0 +1,9 @@
+Floor size: 190 x 111
+
+Origin at bottom left corner
+
+xmin: 15
+xmax: 174
+
+ymin: 15
+ymax: 95

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<body>
+	<!-- SOMETHING HERE -->
+</body>
+
+<style>
+	p
+	{
+		
+	}
+</style>
+
+<script type="text/javascript" src="d3.min.js"></script>
+
+<script type="text/javascript">
+
+var employeeData = new Map();
+var employeeCount;
+var entryCount;
+
+start();
+
+function start()
+{	
+	console.log("start START");
+	loadEmployeeData("../data/json/proxOut-Durations-5-31.json", function()
+	{
+		//padDataEntries(employeeData);
+		getCorrelations(employeeData);
+	});
+	console.log("start END");
+}
+
+function loadEmployeeData(file, callback)
+{
+	console.log("loadEmployeeData START");
+
+	d3.json(file, function(error, data)
+	{
+		if(error) throw error;
+
+		employeeCount = data.length;
+
+		for(var employee = 0; employee < data.length; employee++)
+		{
+			var employeeProxID = data[employee][0].proxID.trim();
+			employeeData.set(employeeProxID, new Array(25).fill(0));
+
+			for(var entry = 0; entry < data[employee].length; entry++)
+			{
+				var floor = +data[employee][entry].floor.trim();
+				var zone = +data[employee][entry].zone.trim();			
+
+				if(zone == "Server Room")
+				{
+					zone = 9;
+				}
+
+				var index = getIndex(floor, zone);
+
+				var temp = employeeData.get(employeeProxID);
+				temp[index] += (+data[employee][entry].durationInSeconds);
+
+				employeeData.set(employeeProxID, temp);
+			}
+		}
+
+		if(typeof callback === "function")
+			callback();
+	});
+}
+
+function getIndex(floor, zone)
+{
+	return 8 * (floor - 1) + (zone - 1);
+}
+
+function getCorrelation(setA, setB)
+{
+	console.log("!");
+	var numerator = 0;
+	var denominator = 0;
+
+	var avgA = 0;
+	var avgB = 0;
+
+	var denomA = 0;
+	var denomB = 0;
+
+	// get mean for each set
+	for(var i = 0; i < setA.length; i++)
+	{
+		avgA += setA[i];
+		avgB += setB[i];
+	}
+
+	avgA /= setA.length;
+	avgB /= setA.length;
+
+	for(var i = 0; i < setA.length; i++)
+	{
+		numerator += (setA[i] - avgA) * (setB[i] - avgB);
+
+		denomA += Math.pow((setA[i] - avgA), 2);
+
+		denomB += Math.pow((setB[i] - avgB), 2);
+	}
+
+	denomA = Math.sqrt(denomA);
+	denomB = Math.sqrt(denomB);
+
+	denominator = denomA * denomB;
+
+	return numerator/denominator;
+}
+
+function getCorrelations(map)
+{
+	console.log("getCorrelations START");
+
+	var correlations = new Array(employeeCount);
+
+	var a = 0;
+	var b = 0;
+
+	map.forEach(function(valueA, keyA)
+	{
+		b = 0;
+		correlations[a] = new Array(employeeCount);
+
+		map.forEach(function(valueB, keyB)
+		{
+			correlations[a][b] = getCorrelation(valueA, valueB);
+
+			console.log("a = " + a + ", b = " + b);
+			b++;
+		});
+
+		a++;
+	});
+
+	console.log("correlations length: " + correlations.length);
+	console.log("correlations[] length: " + correlations[0].length);
+
+	for(var y = 0; y < employeeCount; y++)
+	{
+		for(var x = 0; x < employeeCount; x++)
+		{
+			d3.select("body").append("p").html(correlations[y][x]);
+		}
+
+		d3.select("body").append("br");
+	}
+
+	console.log("getCorrelations END");
+
+	return correlations;
+}
+
+</script>

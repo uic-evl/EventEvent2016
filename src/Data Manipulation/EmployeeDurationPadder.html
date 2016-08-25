@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<body>
+
+</body>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<script>
+
+	var datasetFilenames = ["../data/json/proxOut-Durations-5-31.json", "../data/json/proxOut-Durations-6-1.json", "../data/json/proxOut-Durations-6-2.json", "../data/json/proxOut-Durations-6-3.json", "../data/json/proxOut-Durations-6-5.json", "../data/json/proxOut-Durations-6-6.json", "../data/json/proxOut-Durations-6-7.json", "../data/json/proxOut-Durations-6-8.json", "../data/json/proxOut-Durations-6-9.json", "../data/json/proxOut-Durations-6-10.json", "../data/json/proxOut-Durations-6-11.json", "../data/json/proxOut-Durations-6-12.json","../data/json/proxOut-Durations-6-13.json"];
+
+	var datasets;
+
+	// EXECUTION START
+
+	loadData(pad);
+
+	// EXECUTION END
+
+	function loadData(callback)
+	{
+		datasets = new Array(datasetFilenames.length);
+
+		console.log("len: " + datasets.length);
+
+		loader(0, callback); // synchronously loads data from all data sets in order, then calls callback
+	}
+
+	function loader(index, finalcallback)
+	{
+		// loads data from the dataset at index, and attempts to load the next set of data after
+
+		if(index >= datasetFilenames.length)
+		{
+			finalcallback();
+			return;
+		}
+
+		d3.json(datasetFilenames[index], function(error, data)
+		{
+			if(error)
+				throw error;
+
+			datasets[index] = data;
+
+			loader(index + 1, finalcallback);
+		});
+	}
+
+	function secondsToHms(d) 
+	{
+    	d = Number(d);
+    	var h = Math.floor(d / 3600);
+    	var m = Math.floor(d % 3600 / 60);
+    	var s = Math.floor(d % 3600 % 60);
+    	return ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s); 
+    }
+
+	function pad()
+	{
+		for(var i = 0; i < datasets.length; i++)
+		{
+			for(var employee = 0; employee < datasets[i].length; employee++)
+			{
+				var frontPadding =
+				{
+					date: datasets[i][employee][0].date,
+					timeEntered: "00:00:00",
+					proxID: datasets[i][employee][0].proxID,
+					floor: -1,
+					zone: -1,
+					durationInLocation: datasets[i][employee][0].timeEntered,
+					durationInSeconds: datasets[i][employee][0].startTimeSeconds,
+					startTimeSeconds: 0,
+					endTimeSeconds: datasets[i][employee][0].startTimeSeconds
+				};
+
+				var lastEntryIndex = datasets[i][employee].length - 1;	
+
+				var lasttime = datasets[i][employee][lastEntryIndex].timeEntered.split(":");
+
+                var hr = Number(lasttime[0]);
+                var min = Number(lasttime[1]);
+                var sec = Number(lasttime[2]);
+
+                var lasttimesecs = (hr * 3600) + (min * 60) + sec;
+
+                datasets[i][employee][lastEntryIndex].startTimeSeconds = lasttimesecs;
+                datasets[i][employee][lastEntryIndex].endTimeSeconds = lasttimesecs;
+
+                var lastDuration = 86400 - datasets[i][employee][lastEntryIndex].endTimeSeconds;
+                
+                console.log("ld: " + lastDuration + " = 86400 - " + datasets[i][employee][lastEntryIndex].endTimeSeconds);
+
+				var backPadding = 
+				{
+					date: datasets[i][employee][0].date,
+					timeEntered: secondsToHms(datasets[i][employee][lastEntryIndex].endTimeSeconds),
+					proxID: datasets[i][employee][0].proxID,
+					floor: -1,
+					zone: -1,
+					durationInLocation: secondsToHms(lastDuration),
+					durationInSeconds: lastDuration,
+					startTimeSeconds: datasets[i][employee][lastEntryIndex].endTimeSeconds,
+					endTimeSeconds: 86400
+				};
+
+				datasets[i][employee].unshift(frontPadding);
+				datasets[i][employee].push(backPadding);
+			}
+		}
+
+		for(var i = 0; i < datasets.length; i ++)
+		{
+			downloadJSON(datasets[i]);
+		}		
+	}
+
+	function downloadJSON(object)
+	{
+        var json = JSON.stringify(object)
+
+        var csvWin = window.open("","","");
+        csvWin.document.write('<meta name="content-type" content="text/csv">');
+        csvWin.document.write('<meta name="content-disposition" content="attachment;  filename=test.csv">  ');
+        csvWin.document.write(json);
+    }
+</script>

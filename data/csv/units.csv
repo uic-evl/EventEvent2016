@@ -1,0 +1,39 @@
+field,units,abbreviation
+F_%f_BATH_EXHAUST:Fan Power,Watts,W
+F_%f_VAV_SYS AIR LOOP INLET Mass Flow Rate,Kilograms per Second,kg/s
+F_%f_VAV_SYS AIR LOOP INLET Temperature,Degrees Celsius,°C
+F_%f VAV Availability Manager Night Cycle Control Status,,
+F_%f_VAV_SYS COOLING COIL Power,Watts,W
+F_%f_VAV_SYS HEATING COIL Power,Watts,W
+F_%f_VAV_SYS SUPPLY FAN OUTLET Mass Flow Rate,Kilograms per Second,kg/s
+F_%f_VAV_SYS SUPPLY FAN OUTLET Temperature,Degrees Celsius,°C
+F_%f_VAV_SYS Outdoor Air Flow Fraction,,
+F_%f_VAV_SYS Outdoor Air Mass Flow Rate,Kilograms per Second,kg/s
+COOL Schedule Value,Degrees Celsius,°C
+DELI-FAN Power,Watts,W
+Drybulb Temperature,Degrees Celsius,°C
+Wind Direction,Degrees,deg
+Wind Speed,Meters per Second,m/s
+HEAT Schedule Value,Degrees Celsius,°C
+Pump Power,Watts,W
+Water Heater Setpoint,Degrees Celsius,°C
+Water Heater Gas Rate,Watts,W
+Water Heater Tank Temperature,Degrees Celsius,°C
+Loop Temp Schedule,Degrees Celsius,°C
+Supply Side Inlet Mass Flow Rate,Kilograms per Second,kg/s
+Supply Side Inlet Temperature,Degrees Celsius,°C
+Supply Side Outlet Temperature,Degrees Celsius,°C
+F_%f_Z_%z REHEAT COIL Power,Watts,W
+F_%f_Z_%z RETURN OUTLET CO2 Concentration,Parts per Million,ppm
+F_%f_Z_%z SUPPLY INLET Mass Flow Rate,Kilograms per Second,kg/s
+F_%f_Z_%z SUPPLY INLET Temperature,Degrees Celsius,°C
+F_%f_Z_%z VAV REHEAT Damper Position,,
+F_%f_Z_%z: Equipment Power,Watts,W
+F_%f_Z_%z: Lights Power,Watts,W
+F_%f_Z_%z: Mechanical Ventilation Mass Flow Rate,Kilograms per Second,kg/s
+F_%f_Z_%z: Thermostat Temp, Degrees Celsius,°C
+F_%f_Z_%z: Thermostat Cooling Setpoint,Degrees Celsius,°C
+F_%f_Z_%z: Thermostat Heating Setpoint,Degrees Celsius,°C
+Total Electric Demand Power,Watts,W
+HVAC Electric Demand Power,Watts,W
+F_%f_Z_%z: Hazium Concentration,Parts per Million,ppm

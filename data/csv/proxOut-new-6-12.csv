@@ -1,0 +1,14 @@
+date,time,type,proxID,floor,zone
+2016-06-12,  08:00:00, fixed-prox, llagos001, 1, 1
+2016-06-12,  08:00:54, fixed-prox, llagos001, 1, 4
+2016-06-12,  08:01:36, fixed-prox, llagos001, 2, 4
+2016-06-12,  08:02:07, fixed-prox, llagos001, 3, 4
+2016-06-12,  08:02:09, fixed-prox, llagos001, 3, 1
+2016-06-12,  08:02:32, fixed-prox, llagos001, 3, 6
+2016-06-12,  08:02:40, fixed-prox, llagos001, 3, 3
+2016-06-12,  12:00:10, fixed-prox, llagos001, 3, 6
+2016-06-12,  12:00:17, fixed-prox, llagos001, 3, 1
+2016-06-12,  12:00:36, fixed-prox, llagos001, 3, 4
+2016-06-12,  12:01:18, fixed-prox, llagos001, 2, 4
+2016-06-12,  12:01:49, fixed-prox, llagos001, 1, 4
+2016-06-12,  12:01:51, fixed-prox, llagos001, 1, 1

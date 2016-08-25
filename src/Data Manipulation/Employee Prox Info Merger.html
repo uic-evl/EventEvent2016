@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<style>
+</style>
+
+<script type="text/javascript" src="d3.min.js"></script>
+
+<script type ="text/javascript">
+
+var employees;
+var fixedProx = [];
+var mobileProx = [];
+
+loadEmployees();
+
+
+/*
+-----------------------------------
+	FUNCTIONS FROM HERE ON DOWN
+-----------------------------------
+*/
+
+// load base employee info from csv into objects
+function loadEmployees()
+{
+	var employeesList = [];
+
+	d3.csv("../data/csv/Employee List.csv")
+		.row(function(d)
+		{
+			// how many unique IDs does the employee use?
+			d.idCount = 0;
+
+			// how many prox events are attached to this employee?
+			d.proxCount = 0;
+
+			employeesList.push(d);
+		})
+		.get(function(error, rows)
+		{
+			// insert all employees into a map, where the key is the name portion of the employee's prox ids (ex for Mat Bramar, the key is mbramar)
+			employees = d3.map(employeesList, function(d)
+			{
+				return d.id;
+			});
+
+			afterLoadEmployees();	
+		});
+}
+
+// called after we've loaded the base employee info to fill out the rest
+function afterLoadEmployees()
+{
+	// load prox data
+	getFixedProx();
+	getMobileProx();
+}
+
+function fixedProxCallback()
+{
+	for(var i = 0; i < fixedProx.length; i++)
+	{
+		var proxName = getProxName(fixedProx[i].message.proxCard);
+		var proxNum = getProxNum(fixedProx[i].message.proxCard);
+
+		if(employees.has(proxName))
+		{
+			var employee = employees.get(proxName);
+
+			fixedProx[i].message[""] = i;
+			fixedProx[i].message.LastName = employee.LastName;
+			fixedProx[i].message.FirstName = employee.FirstName;
+		}
+		else
+		{
+			fixedProx[i].message[""] = i;
+			fixedProx[i].message.LastName = "";
+			fixedProx[i].message.FirstName = "";
+		}
+	}
+
+	var str = JSON.stringify(fixedProx);
+	d3.select("body").append("p").text(str);
+}
+
+function mobileProxCallback()
+{
+	// run through prox data
+	for(var i = 0; i < mobileProx.length; i++)
+	{
+		//console.log("run " + i);
+
+		var proxName = getProxName(mobileProx[i].message.proxCard);
+		var proxNum = getProxNum(mobileProx[i].message.proxCard);
+
+		if(employees.has(proxName))
+		{
+			var current = employees.get(proxName);
+
+			if(current.idCount < proxNum)
+				current.idCount = proxNum;
+
+			current.proxCount++;
+
+			//console.log(proxName + proxNum + " - " + current.proxCount);
+
+			employees.set(proxName, current);
+		}
+		else
+		{
+			// The user wasn't found in the list of employees, something's off
+			console.log("Could not find matching employee for " + proxName + ".");
+			employees.set(proxName, {proxCount: 1, firstName: "?", lastName: "?"});
+		}
+	}
+
+	employees.forEach(function(key, value)
+	{
+		console.log(key + "," + value.proxCount);
+	})
+}
+
+// get the name portion of a prox id for an employee with the given names
+function getEmployeeProxName(firstName, lastName)
+{
+	return (firstName.substr(0, 1) + lastName).toLowerCase();
+}
+
+// get the name portion of a prox id
+function getProxName(id)
+{
+	return id.substr(0, id.length - 3).toLowerCase();
+}
+
+// get the number portion of a prox id
+function getProxNum(id)
+{
+	return +(id.substr(id.length - 3, 3));
+}
+
+// read in and associate fixed location prox reads with users
+function getFixedProx()
+{
+	d3.json("../data/json/proxOut-MC2new.json", function(error, msg)
+	{
+		if(error)
+		{
+			console.log("ERROR: " + error);
+			return;
+		}
+
+		fixedProx = msg;
+
+		console.log(fixedProx[0].message.proxCard + " @ " + (+fixedProx[0].offset));
+
+		fixedProxCallback();
+	});
+}
+
+// read in and associate mobile prox reads with users
+function getMobileProx()
+{
+	d3.json("../data/json/proxMobileout-MC2new.json", function(error, msg)
+	{
+		if(error)
+		{
+			console.log("ERROR: " + error);
+			return;
+		}
+
+		mobileProx = msg;
+
+		console.log(mobileProx[0].message.proxCard + " @ " + (+mobileProx[0].offset) + "s, (" + mobileProx[0].message.X + ", " + mobileProx[0].message.Y + ")");
+
+		mobileProxCallback();
+	});
+}
+
+
+</script>
+

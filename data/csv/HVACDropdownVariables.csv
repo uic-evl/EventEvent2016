@@ -1,0 +1,13 @@
+name,nameTemplate,units,abbreviation
+RETURN OUTLET CO2 Concentration,F_%f_Z_%z RETURN OUTLET CO2 Concentration,Parts per Million,ppm
+REHEAT COIL Power,F_%f_Z_%z REHEAT COIL Power,Watts,W
+SUPPLY INLET Mass Flow Rate,F_%f_Z_%z SUPPLY INLET Mass Flow Rate,Kilograms per Second,kg/s
+SUPPLY INLET Temperature,F_%f_Z_%z SUPPLY INLET Temperature,Degrees Celsius,°C
+VAV REHEAT Damper Position,F_%f_Z_%z VAV REHEAT Damper Position,,
+Equipment Power,F_%f_Z_%z: Equipment Power,Watts,W
+Lights Power,F_%f_Z_%z: Lights Power,Watts,W
+Mechanical Ventilation Mass Flow Rate,F_%f_Z_%z: Mechanical Ventilation Mass Flow Rate,Kilograms per Second,kg/s
+Thermostat Temp,F_%f_Z_%z: Thermostat Temp, Degrees Celsius,°C
+Thermostat Cooling Setpoint,F_%f_Z_%z: Thermostat Cooling Setpoint,Degrees Celsius,°C
+Thermostat Heating Setpoint,F_%f_Z_%z: Thermostat Heating Setpoint,Degrees Celsius,°C
+Hazium Concentration,F_%f_Z_%z: Hazium Concentration,Parts per Million,ppm

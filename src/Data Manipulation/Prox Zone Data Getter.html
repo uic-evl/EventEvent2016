@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<style>
+</style>
+
+<script type="text/javascript" src="d3.min.js"></script>
+
+<script type ="text/javascript">
+
+/*
+	TODO (NOT NECESSARILY IN ORDER)
+	------------------
+
+	1. Most visited prox points
+	2. List of rooms for selected prox points
+	3. Top visitors to selected prox point
+	4. Top prox points for selected visitor
+	5. Office locations for each user
+	6. How often each user is found in or enters their own office's prox point (distinct because visits and being found by the robot imply different things)
+	7. Most active floors
+
+*/
+
+// EXECUTION STARTS HERE //
+
+loadZones();
+
+// EXECUTION ENDS HERE //
+
+var zones = d3.map(); // map containing the number of visits to each prox zone keyed into by a string in format <floor#>,<proxzone#>
+
+function loadZones()
+{
+	var zoneList = [];
+
+	d3.csv("../data/csv/officezones.csv")
+		.row(function(d)
+		{
+			zoneList.push(d);
+		})
+		.get(function(error, rows)
+		{
+			var i;
+
+			for(i = 0; i < zoneList.length; i++)
+			{
+				keyStr = zoneList[i].floor + "," + zoneList[i].proxzone;
+
+				if(!zones.has(keyStr))
+				{
+					console.log("adding: " + keyStr);
+					zones.set(keyStr, 0);
+				}
+			}
+
+			getZoneVisits();
+		});
+}
+
+function getZoneVisits()
+{
+	// total up visits for each zone and add to map
+
+	//getZoneStaticVisits();
+	getZoneMobileVisits();
+}
+
+function getZoneStaticVisits()
+{
+	d3.json("../data/json/proxOut-MC2new.json", function(error, msg)
+	{
+		if(error)
+		{
+			console.log("ERROR: " + error);
+			return;
+		}
+
+		var i;
+
+		for(i = 0; i < msg.length; i++)
+		{
+			var proxZone = msg[i].message.zone;
+			var proxFloor = msg[i].message.floor;
+
+			var keyStr = proxFloor + "," + proxZone;
+
+			if(zones.has(keyStr))
+				zones.set(keyStr, zones.get(keyStr) + 1);
+			else
+			{
+				console.log(keyStr + " not found");
+				console.log(" -> zone = " + msg[i].message.zone);
+			}
+		}
+
+		printZoneVisits();
+	});
+}
+
+function getZoneMobileVisits()
+{
+	d3.json("../data/json/proxMobileOut-MC2new.json", function(error, msg)
+	{
+		if(error)
+		{
+			console.log("ERROR: " + error);
+			return;
+		}
+
+		var i;
+
+		for(i = 0; i < msg.length; i++)
+		{
+			var proxZone = msg[i].message.zone;
+			var proxFloor = msg[i].message.floor;
+
+			var keyStr = proxFloor + "," + proxZone;
+
+			if(zones.has(keyStr))
+				zones.set(keyStr, zones.get(keyStr) + 1);
+			else
+			{
+				console.log(keyStr + " not found");
+				console.log(" -> zone = " + msg[i].message.zone);
+			}
+		}
+
+		printZoneVisits();
+	});
+}
+
+function printZoneVisits()
+{
+	console.log("ZONE VISITS:");
+
+	zones.forEach(function(key, value)
+	{
+		console.log(key + "," + value);
+	});
+}
+
+</script>
